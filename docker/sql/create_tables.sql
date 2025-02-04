@@ -1,1 +1,1 @@
-CREATE DATABASE elDorado;
+CREATE DATABASE eldorado;
