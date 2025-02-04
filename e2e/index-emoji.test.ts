@@ -100,14 +100,10 @@ describe("E2E Emoji Tests", () => {
         },
       });
 
-      if (!createdItem?.id) {
-        throw Error("Invalid item");
-      }
-
       const theOtherPrefix =
-        createdItem.id % 2 === 0 ? ODD_PREFIX : EVEN_PREFIX;
+        createdItem!.id % 2 === 0 ? ODD_PREFIX : EVEN_PREFIX;
 
-      const itemPrefix = createdItem.id % 2 === 0 ? EVEN_PREFIX : ODD_PREFIX;
+      const itemPrefix = createdItem!.id % 2 === 0 ? EVEN_PREFIX : ODD_PREFIX;
 
       const response = await server.inject({
         method: "PUT",
