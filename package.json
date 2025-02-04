@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "jest e2e",
+    "test-emoji": "jest e2e/index-emoji.test.ts",
     "dev": "ts-node src/index.ts"
   },
   "author": "El Dorado Dev Team",

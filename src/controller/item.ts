@@ -4,6 +4,9 @@ import { Decimal } from "decimal.js";
 import { Item, itemCreateSchema } from "../entities/item";
 import { AppDataSource } from "../util";
 
+export const ODD_PREFIX = "👎";
+export const EVEN_PREFIX = "👍";
+
 class ItemController {
   public async getAll() {
     const items = await AppDataSource.manager.find(Item);
@@ -39,6 +42,8 @@ class ItemController {
     item.name = name;
     item.price = new Decimal(price).toString();
     const savedItem = await AppDataSource.manager.save(item);
+    savedItem.name = getNameWithPrefix(savedItem);
+    await AppDataSource.manager.save(savedItem);
 
     return response.response(mapItem(savedItem)).code(201);
   }
@@ -57,6 +62,7 @@ class ItemController {
       .where("item.id = :id", { id: itemId })
       .getOneOrFail();
     item.name = name;
+    item.name = getNameWithPrefix(item);
     item.price = new Decimal(price).toString();
     const savedItem = await AppDataSource.manager.save(item);
     return mapItem(savedItem);
@@ -102,5 +108,20 @@ const validatePayload = (payload: any) => {
       return { message: error.message, field: error.context?.key };
     });
     return errors;
+  }
+};
+
+const getNameWithPrefix = (item: Item) => {
+  if (item.name.startsWith(ODD_PREFIX)) {
+    item.name = item.name.substring(ODD_PREFIX.length);
+  } else if (item.name.startsWith(EVEN_PREFIX)) {
+    item.name = item.name.substring(EVEN_PREFIX.length);
+  }
+
+  const itemId = new Decimal(item.id.toString());
+  if (itemId.modulo(2).eq(0)) {
+    return EVEN_PREFIX + item.name;
+  } else {
+    return ODD_PREFIX + item.name;
   }
 };
